@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Navegue pela programação completa da Rio Innovation Week. Busque palestras, filtre por dia da semana, categorias, palestrantes e monte sua agenda de eventos.">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai">
+  <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai">
+  <meta name="gptbot" content="noindex, nofollow, noai, noimageai">
+  <title>Rio Innovation Week 2026 — Programação Completa</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- SITE HEADER -->
+  <header class="site-header">
+    <div class="container header-content">
+      <div class="brand-area">
+        <div class="brand-logo">RIW</div>
+        <div class="brand-text">
+          <h1>Rio Innovation Week</h1>
+          <p>Guia de Eventos & Programação</p>
+        </div>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <div class="search-wrapper">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Buscar por tema, palestra, palestrante ou empresa..."
+          autocomplete="off"
+        >
+        <button id="clearSearch" class="clear-search" style="display: none;" title="Limpar busca">&times;</button>
+      </div>
+
+      <!-- MINHA AGENDA FAVORITES TOGGLE BUTTON -->
+      <button id="favAgendaBtn" class="fav-agenda-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        Minha Agenda (0)
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- CALENDAR DAYS STRIP -->
+    <section class="calendar-section">
+      <div class="calendar-header">
+        <div class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Dia do Evento & Dia da Semana
+        </div>
+      </div>
+      <div id="dayTabs" class="calendar-days-bar">
+        <!-- Dynamic Day Tabs Inserted via JS -->
+      </div>
+    </section>
+
+    <!-- FILTER BAR -->
+    <section class="filters-section">
+      <div class="filters-grid">
+        
+        <!-- Categoria -->
+        <div class="filter-group">
+          <label class="filter-label" for="categoryFilter">Categoria (Trilha)</label>
+          <select id="categoryFilter" class="filter-select">
+            <option value="ALL">Todas as Categorias</option>
+          </select>
+        </div>
+
+        <!-- Subcategoria -->
+        <div class="filter-group">
+          <label class="filter-label" for="subcategoryFilter">Subcategoria</label>
+          <select id="subcategoryFilter" class="filter-select">
+            <option value="ALL">Todas as Subcategorias</option>
+          </select>
+        </div>
+
+        <!-- Local / Palco -->
+        <div class="filter-group">
+          <label class="filter-label" for="locationFilter">Local / Palco</label>
+          <select id="locationFilter" class="filter-select">
+            <option value="ALL">Todos os Locais & Palcos</option>
+          </select>
+        </div>
+
+        <!-- Turno / Horário -->
+        <div class="filter-group">
+          <label class="filter-label" for="timePeriodFilter">Turno / Horário</label>
+          <select id="timePeriodFilter" class="filter-select">
+            <option value="ALL">Todos os Horários</option>
+            <option value="MORNING">Manhã (Até 12:00)</option>
+            <option value="AFTERNOON">Tarde (12:00 às 18:00)</option>
+            <option value="NIGHT">Noite (Após 18:00)</option>
+          </select>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="filter-group">
+          <button id="resetFilters" class="btn-reset">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            Limpar Filtros
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RESULTS METADATA BAR -->
+    <div class="results-info-bar">
+      <div id="resultsCount" class="results-count">Carregando programação...</div>
+    </div>
+
+    <!-- EVENTS CARDS GRID -->
+    <div id="eventsGrid" class="events-grid">
+      <!-- Event Cards Inserted via JS -->
+    </div>
+
+    <!-- LOAD MORE CONTAINER -->
+    <div id="loadMoreContainer" class="load-more-container" style="display: none;">
+      <button id="loadMoreBtn" class="btn-load-more">Carregar Mais Palestras</button>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">🔍</div>
+      <h3 class="empty-title">Nenhum evento encontrado</h3>
+      <p class="empty-desc">Tente ajustar seus termos de busca ou limpar os filtros para visualizar mais palestras.</p>
+    </div>
+
+  </main>
+
+  <!-- EVENT DETAILS MODAL -->
+  <div id="eventModal" class="modal-overlay">
+    <div class="modal-content">
+      <button id="modalClose" class="modal-close" title="Fechar modal">&times;</button>
+      
+      <div class="modal-header-meta">
+        <span id="modalCategory" class="badge-cat"></span>
+        <span id="modalSubcategory" class="badge-subcat"></span>
+      </div>
+
+      <h2 id="modalTitle" class="modal-title"></h2>
+
+      <div class="modal-info-grid">
+        <div class="modal-info-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <div class="modal-info-text">
+            <strong>Data e Dia da Semana</strong>
+            <span id="modalDate"></span>
+          </div>
+        </div>
+
+        <div class="modal-info-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <div class="modal-info-text">
+            <strong>Horário</strong>
+            <span id="modalTime"></span>
+          </div>
+        </div>
+
+        <div class="modal-info-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <div class="modal-info-text">
+            <strong>Local / Palco</strong>
+            <span id="modalLocation"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-description">
+        <h4 class="modal-section-title">Sobre a Palestra / Painel</h4>
+        <p id="modalDescription"></p>
+      </div>
+
+      <div class="modal-speakers">
+        <h4 class="modal-section-title">Palestrantes</h4>
+        <div id="modalSpeakersList"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="modalStarBtn" class="btn-modal-star">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          Adicionar à Minha Agenda
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="events-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
