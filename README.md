@@ -10,8 +10,8 @@ O objetivo deste projeto é demonstrar como o papel do **QA atua na prevenção 
 
 | Versão | Link de Acesso | Abordagem & Perspectiva |
 | :--- | :--- | :--- |
-| 🔴 **Original** | [rioinnovationweek.com.br/programacao](https://rioinnovationweek.com.br/programacao) | Plataforma legada com pontos de atrito e latência de carregamento. |
-| 🟢 **PoC de QA (GitHub Pages)** | [https://github.com/rodrigoferreira-ti/rio-innovation-week-redesign/](https://github.com/rodrigoferreira-ti/rio-innovation-week-redesign/) | Solução otimizada pela Engenharia de Qualidade, 100% gratuita no GitHub Pages. |
+| 🔴 **Original** | <a href="rioinnovationweek.com.br/programacao" target="_blank" rel="noopener">rioinnovationweek.com.br/programacao</a> | Plataforma legada com pontos de atrito e latência de carregamento. |
+| 🟢 **PoC de QA (GitHub Pages)** | <a href="https://rodrigoferreira-ti.github.io/rio-innovation-week-redesign/" target="_blank" rel="noopener">rodrigoferreira-ti.github.io/rio-innovation-week-redesign</a> | Solução otimizada pela Engenharia de Qualidade, 100% gratuita no GitHub Pages. |
 
 ---
 
