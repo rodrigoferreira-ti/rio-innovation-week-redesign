@@ -1,72 +1,76 @@
-# 🧪 Estudo de Caso de QA & UX — Redesign & Otimização de Performance (Rio Innovation Week)
+# 🧪 Estudo de Caso de QA & UX — Redesign & Otimização de Performance
+### Rio Innovation Week 2026 • Prova de Conceito (PoC)
 
-Este repositório apresenta uma **Prova de Conceito (PoC) desenvolvida sob a ótica de Quality Assurance (QA)**, propondo uma reformulação completa da experiência de navegação e busca na programação da **Rio Innovation Week 2026**.
+[![GitHub Pages](https://img.shields.io/badge/Demo-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://rodrigoferreira-ti.github.io/rio-innovation-week-redesign/)
+[![JavaScript](https://img.shields.io/badge/Vanilla_JS-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](#)
+[![Performance](https://img.shields.io/badge/Performance-<100ms_latência-00C853?style=flat-square)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](#)
 
-O objetivo deste projeto é demonstrar como o papel do **QA atua na prevenção de falhas, melhoria de usabilidade (UX) e entrega de valor**, transformando uma plataforma com gargalos em uma solução de **desempenho ultra-rápido, filtros encadeados à prova de erros (zero combinações nulas) e agenda pessoal sem atrito**.
+**Engenharia de Qualidade Orientada ao Usuário:** Como o papel de QA atua preventivamente na arquitetura de filtros, eliminação de atrito de UX e garantia de performance crítica ao manipular **1.479+ registros** no navegador.
 
 ---
 
-## 🔗 Links para Comparação
+## 🔗 Acesso Rápido
 
-| Versão | Link de Acesso | Abordagem & Perspectiva |
+| Versão | Link | Cenário Avaliado |
 | :--- | :--- | :--- |
-| 🔴 **Original** | <a href="https://rioinnovationweek.com.br/programacao" target="_blank" rel="noopener">rioinnovationweek.com.br/programacao</a> | Plataforma legada com pontos de atrito e latência de carregamento. |
-| 🟢 **PoC de QA (GitHub Pages)** | <a href="https://rodrigoferreira-ti.github.io/rio-innovation-week-redesign/" target="_blank" rel="noopener">rodrigoferreira-ti.github.io/rio-innovation-week-redesign</a> | Solução otimizada pela Engenharia de Qualidade, 100% gratuita no GitHub Pages. |
+| 🔴 **Original** | [rioinnovationweek.com.br/programacao](https://rioinnovationweek.com.br/programacao) | Plataforma legada: latência de carregamento e dependência de requisições de servidor. |
+| 🟢 **PoC de QA** | [rodrigoferreira-ti.github.io/rio-innovation-week-redesign](https://rodrigoferreira-ti.github.io/rio-innovation-week-redesign/) | Solução estática otimizada, com processamento em client-side e zero dependências pesadas. |
 
 ---
 
-## 📊 Matriz Comparativa de Qualidade: Original vs. PoC de QA
+## 📊 Matriz Comparativa de Qualidade
 
-| Critério de Qualidade | 🔴 Versão Original | 🟢 PoC de QA (Melhoria Proposta) |
+| Critério de Qualidade | 🔴 Versão Legada | 🟢 PoC Otimizada (QA & UX) |
 | :--- | :--- | :--- |
-| **Performance & Latência** | Carregamento mais lento e dependente de requisições de servidor/WordPress. | **Zero Latência (< 100ms)**. Carrega 1.479+ eventos no navegador sem gargalos. |
-| **Engenharia & Arquitetura** | CMS com alto consumo de memória e scripts de terceiros. | **Vanilla JS (ES6+) + CSS3 puro**. Leveza extrema, zero dependências complexas. |
-| **Tratamento de Edge Cases (Filtros)** | Filtros isolados que permitem seleções sem resultados. | **Filtros Encadeados Inteligentes (Cascading)**. Seleções dinâmicas que **previnem combinações vazias**. |
-| **Navegação & Ergonomia** | Menus ou filtros em lista tradicionais. | **Abas Diárias Visuais com Badges** (`TER — 04/08`, `QUA — 05/08`, `QUI — 06/08`, `SEX — 07/08`). |
-| **Experiência do Usuário (UX)** | Exige criação de conta/login para guardar programação. | **Favoritos em 1 Clique (localStorage)**. Zero fricção, sem necessidade de cadastro. |
-| **Acessibilidade na Busca** | Pesquisa restrita. | **Busca Global em Tempo Real** por título, palestrante, empresa, tema ou palco. |
-| **Interface Visual (UI)** | Layout claro tradicional. | **Dark Mode Moderno com Glassmorphism**, modais responsivos e alta legibilidade. |
+| **Performance & Latência** | Carregamento assíncrono lento por requisições sucessivas a banco/CMS. | **Resposta instantânea (< 100ms)** ao filtrar e ordenar 1.479+ eventos. |
+| **Prevenção de Falhas (Filtros)** | Seletores isolados que levam a combinações sem resultados (*Dead Ends*). | **Filtros Encadeados Inteligentes:** opções recalculadas dinamicamente para **eliminar combinações vazias**. |
+| **Arquitetura & Overhead** | CMS com múltiplos scripts de terceiros e alto consumo de memória. | **Vanilla JS (ES6+) + CSS3 puro**: zero frameworks pesados, foco em tempo de execução mínimo. |
+| **Ergonomia de Navegação** | Listas longas e densas sem agrupamento temporal claro. | **Abas Diárias com Badges** (`04/08` a `07/08`) com contadores de sessões ativas. |
+| **Experiência do Usuário (UX)** | Exigência de cadastro/login para salvar programação do evento. | **Minha Agenda em 1 Clique (`localStorage`)**: persistência local com zero fricção. |
+| **Mecanismo de Busca** | Busca restrita e dependente de retorno de API. | **Busca Global em Tempo Real** por título, palestrante, empresa, tema ou palco. |
+| **UI & Acessibilidade** | Contraste variável e layouts estáticos. | **Dark Mode com Glassmorphism**, alta legibilidade e modais contextuais. |
 
 ---
 
-## ✨ Recursos & Melhorias de Qualidade Implementadas
+## 🛡️ Recursos & Engenharia Defensiva
 
-### 1. ⚡ Performance como Requisito Não-Funcional de QA
-* Dataset de **1.479 eventos** otimizado em client-side.
-* Execução em qualquer hospedagem estática (como **GitHub Pages**), garantindo alta disponibilidade sem custos ou falhas de servidor.
+### 1. ⚡ Performance como Requisito Não-Funcional (NFR)
+* O dataset integral de **1.479 eventos** foi estruturado para consumo em memória no navegador sem degradação de FPS (*Frame Drop*).
+* Hospedagem 100% estática (GitHub Pages), eliminando vulnerabilidade a picos de tráfego que costumam derrubar servidores durante grandes eventos.
 
-### 2. 🎯 Prevenção de Erros com Filtros Encadeados (*Cascading Filters*)
-* Hierarquia dinâmica: `Data ➔ Categoria ➔ Subcategoria ➔ Local/Palco ➔ Turno (Horário) ➔ Busca Textual`.
-* As opções dos seletores são recalculadas em tempo real: ao escolher a Categoria *"Saúde"*, o filtro de *Local/Palco* exibe apenas os palcos com palestras ativas de Saúde. **Eliminação completa de telas/resultados vazios!**
+### 2. 🎯 Prevenção de Estados Inválidos (*Cascading Filters*)
+* **Fluxo hierárquico:** `Data ➔ Categoria ➔ Subcategoria ➔ Local/Palco ➔ Turno ➔ Busca Textual`.
+* O sistema recalcula o estado dos seletores subsequentes a cada alteração. Se uma categoria não tem sessões em determinado turno ou palco, essas opções são ocultadas ou desabilitadas automaticamente.
 
-### 3. ⭐ Agenda do Participante sem Fricção
-* Marcação imediata de favoritos por estrela em cards e modais.
-* O botão **"Minha Agenda"** consolida os eventos salvos de todos os dias em um só lugar.
-
-### 4. 🎨 Modais Ricos em Informação
-* Exibição detalhada de cada sessão: descrição completa, horário, local/palco, tags e avatares estilizados de palestrantes.
+### 3. ⭐ Persistência Local sem Coleta Desnecessária de Dados
+* Implementação via **Web Storage API (`localStorage`)**, permitindo que o participante monte e revise sua agenda sem submeter dados pessoais ou enfrentar telas de login.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Stack Tecnológica
 
-- **Frontend**: HTML5 Semântico, CSS3 Moderno (Variáveis CSS, Flexbox, CSS Grid, Glassmorphic Design).
-- **Lógica & Estado**: JavaScript Vanilla ES6+ (Sem frameworks pesados, foco em desempenho puro).
-- **Persistência Local**: Web Storage API (`localStorage`).
-
----
-
-## 🎯 A Perspectiva de QA & Engenharia de Qualidade
-
-Este projeto foi concebido e desenvolvido sob a ótica de **Quality Assurance (QA)**, demonstrando como a atuação proativa de QA vai muito além de "encontrar bugs":
-
-* **Garantia de Qualidade Orientada ao Usuário (UX-Driven QA):** Mapeamento e eliminação de atritos de navegabilidade, convertendo um fluxo complexo em uma experiência simples e intuitiva.
-* **Prevenção de Erros & Casos de Borda (*Edge Cases*):** Arquitetura defensiva nos filtros que invalida opções incompatíveis em tempo real.
-* **Performance como Pilar de QA:** Validação de tempo de resposta em cenários com grande volume de dados (+1.400 registros).
-* **Visão Estratégica de Produto:** QA atuando como agente transformador da entrega de valor ao negócio e ao cliente final.
+- **Estrutura & Semântica:** HTML5 estruturado para leitura de tela e SEO.
+- **Estilização:** CSS3 puro (Variáveis CSS, CSS Grid, Flexbox e efeitos de Glassmorphism).
+- **Lógica e Estado:** JavaScript Vanilla moderno (ES6+ Modules, manipulação de arrays e eventos reativos).
+- **Armazenamento:** Web Storage API (`localStorage`).
 
 ---
 
-## 📄 Licença e Propósito
+## 💻 Como Testar Localmente
 
-Este repositório serve como uma **Prova de Conceito (PoC) e Estudo de Caso de QA & UX**, demonstrando o impacto direto da cultura de qualidade na excelência de produtos digitais.
+Por ser uma aplicação pura em Vanilla JS, não há necessidade de instalação de dependências pesadas (`node_modules`):
+
+```bash
+# 1. Clone o repositório
+git clone [https://github.com/rodrigoferreira-ti/rio-innovation-week-redesign.git](https://github.com/rodrigoferreira-ti/rio-innovation-week-redesign.git)
+
+# 2. Acesse o diretório
+cd rio-innovation-week-redesign
+
+# 3. Execute com qualquer servidor estático local (opcional)
+# Usando Python 3:
+python3 -m http.server 8000
+
+# Ou usando Node.js (npx):
+npx serve
