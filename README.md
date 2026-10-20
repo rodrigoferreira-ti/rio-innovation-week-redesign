@@ -14,14 +14,14 @@
 
 | Versão | Link | Cenário Avaliado |
 | :--- | :--- | :--- |
-| 🔴 **Original** | [rioinnovationweek.com.br/programacao](https://rioinnovationweek.com.br/programacao) | Plataforma legada: latência de carregamento e dependência de requisições de servidor. |
-| 🟢 **PoC de QA** | [rodrigoferreira-ti.github.io/rio-innovation-week-redesign](https://rodrigoferreira-ti.github.io/rio-innovation-week-redesign/) | Solução estática otimizada, com processamento em client-side e zero dependências pesadas. |
+| **Original** | [rioinnovationweek.com.br/programacao](https://rioinnovationweek.com.br/programacao) | Plataforma legada: latência de carregamento e dependência de requisições de servidor. |
+| **PoC de QA** | [rodrigoferreira-ti.github.io/rio-innovation-week-redesign](https://rodrigoferreira-ti.github.io/rio-innovation-week-redesign/) | Solução estática otimizada, com processamento em client-side e zero dependências pesadas. |
 
 ---
 
 ## Matriz Comparativa de Qualidade
 
-| Critério de Qualidade | 🔴 Versão Legada | 🟢 PoC Otimizada (QA & UX) |
+| Critério de Qualidade | Versão Original | PoC Otimizada (QA & UX) |
 | :--- | :--- | :--- |
 | **Performance & Latência** | Carregamento assíncrono lento por requisições sucessivas a banco/CMS. | **Resposta instantânea (< 100ms)** ao filtrar e ordenar 1.479+ eventos. |
 | **Prevenção de Falhas (Filtros)** | Seletores isolados que levam a combinações sem resultados (*Dead Ends*). | **Filtros Encadeados Inteligentes:** opções recalculadas dinamicamente para **eliminar combinações vazias**. |
