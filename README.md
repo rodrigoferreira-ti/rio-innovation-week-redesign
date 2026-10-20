@@ -10,7 +10,7 @@
 
 ---
 
-## 🔗 Acesso Rápido
+## Acesso Rápido
 
 | Versão | Link | Cenário Avaliado |
 | :--- | :--- | :--- |
@@ -48,7 +48,7 @@
 
 ---
 
-## 🛠️ Stack Tecnológica
+## Stack Tecnológica
 
 - **Estrutura & Semântica:** HTML5 estruturado para leitura de tela e SEO.
 - **Estilização:** CSS3 puro (Variáveis CSS, CSS Grid, Flexbox e efeitos de Glassmorphism).
