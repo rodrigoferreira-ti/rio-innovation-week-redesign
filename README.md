@@ -33,7 +33,7 @@
 
 ---
 
-## 🛡️ Recursos & Engenharia Defensiva
+## Recursos & Engenharia Defensiva
 
 ### 1. Performance como Requisito Não-Funcional (NFR)
 * O dataset integral de **1.479 eventos** foi estruturado para consumo em memória no navegador sem degradação de FPS (*Frame Drop*).
