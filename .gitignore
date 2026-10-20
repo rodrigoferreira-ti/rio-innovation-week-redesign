@@ -9,3 +9,12 @@ Thumbs.db
 
 # Servidor local Apache
 .htaccess
+
+# Node & Testes
+node_modules/
+package-lock.json
+package.json
+tests_screenshots/
+test_*.js
+
+
