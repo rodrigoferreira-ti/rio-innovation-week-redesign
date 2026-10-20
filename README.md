@@ -1,4 +1,4 @@
-# 🧪 Estudo de Caso de QA & UX — Redesign & Otimização de Performance
+# Estudo de Caso de QA & UX — Redesign & Otimização de Performance
 ### Rio Innovation Week 2026 • Prova de Conceito (PoC)
 
 [![GitHub Pages](https://img.shields.io/badge/Demo-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://rodrigoferreira-ti.github.io/rio-innovation-week-redesign/)
@@ -19,7 +19,7 @@
 
 ---
 
-## 📊 Matriz Comparativa de Qualidade
+## Matriz Comparativa de Qualidade
 
 | Critério de Qualidade | 🔴 Versão Legada | 🟢 PoC Otimizada (QA & UX) |
 | :--- | :--- | :--- |
@@ -35,15 +35,15 @@
 
 ## 🛡️ Recursos & Engenharia Defensiva
 
-### 1. ⚡ Performance como Requisito Não-Funcional (NFR)
+### 1. Performance como Requisito Não-Funcional (NFR)
 * O dataset integral de **1.479 eventos** foi estruturado para consumo em memória no navegador sem degradação de FPS (*Frame Drop*).
 * Hospedagem 100% estática (GitHub Pages), eliminando vulnerabilidade a picos de tráfego que costumam derrubar servidores durante grandes eventos.
 
-### 2. 🎯 Prevenção de Estados Inválidos (*Cascading Filters*)
+### 2. Prevenção de Estados Inválidos (*Cascading Filters*)
 * **Fluxo hierárquico:** `Data ➔ Categoria ➔ Subcategoria ➔ Local/Palco ➔ Turno ➔ Busca Textual`.
 * O sistema recalcula o estado dos seletores subsequentes a cada alteração. Se uma categoria não tem sessões em determinado turno ou palco, essas opções são ocultadas ou desabilitadas automaticamente.
 
-### 3. ⭐ Persistência Local sem Coleta Desnecessária de Dados
+### 3. Persistência Local sem Coleta Desnecessária de Dados
 * Implementação via **Web Storage API (`localStorage`)**, permitindo que o participante monte e revise sua agenda sem submeter dados pessoais ou enfrentar telas de login.
 
 ---
@@ -57,7 +57,7 @@
 
 ---
 
-## 💻 Como Testar Localmente
+## Como Testar Localmente
 
 Por ser uma aplicação pura em Vanilla JS, não há necessidade de instalação de dependências pesadas (`node_modules`):
 
