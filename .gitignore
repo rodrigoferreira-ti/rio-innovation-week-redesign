@@ -6,3 +6,6 @@ Thumbs.db
 # IDEs
 .idea/
 .vscode/
+
+# Servidor local Apache
+.htaccess

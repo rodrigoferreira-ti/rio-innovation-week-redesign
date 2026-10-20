@@ -47,6 +47,120 @@ document.addEventListener('DOMContentLoaded', () => {
   const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
   const daysOfWeekShort = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 
+  // Map of local speaker photos downloaded into palestrantes/ folder
+  const SPEAKER_PHOTOS_MAP = {
+    "richard branson": "1.jpg",
+    "steve wozniak": "2.jpg",
+    "spike lee": "3.jpg",
+    "graça machel mandela": "4.jpg",
+    "marc randolph": "5.jpg",
+    "bruce dickinson": "6.jpg",
+    "ian beacraft": "ian-beacraft.jpg",
+    "luciano huck": "8.jpg",
+    "rachel maia": "9.jpg",
+    "rodrigo santoro": "10.jpg",
+    "maju coutinho": "11.jpg",
+    "monja coen": "12.jpg",
+    "ivair gontijo": "13.jpg",
+    "sandrine dixson": "14.jpg",
+    "anitta": "15.jpg",
+    "vandana shiva": "16.jpg",
+    "kip thorne": "17.jpg",
+    "nadia murad": "18.jpg",
+    "alex osterwalder": "19.jpg",
+    "eric ries": "20.jpg",
+    "marcelo gleiser": "marcelo-gleiser.jpg",
+    "nath finanças": "22.jpg",
+    "carol paiffer": "23.jpg",
+    "sidarta ribeiro": "24.jpg",
+    "zico": "25.jpg",
+    "ailton krenak": "26.jpg",
+    "bianca andrade": "27.jpg",
+    "achille mbembe": "28.jpg",
+    "aaron ross": "29.jpg",
+    "amy webb": "amy-webb.jpg",
+    "john maeda": "john-maeda.jpeg",
+    "adam frank": "adam-frank.jpg",
+    "denis mukwege": "denis-mukwege.jpg",
+    "antônio damásio": "antonio-damasio.jpg",
+    "carla madeira": "carla-madeira.jpg",
+    "cida bento": "cida-bento.jpg",
+    "clayton allen": "clayton-allen.png",
+    "camila fremder": "camila-fremder.png",
+    "felipe tito": "felipe-tito.jpg",
+    "daniela arrais": "daniela-arrais.jpg",
+    "hugo gloss": "hugo-gloss.jpg",
+    "james whitfield": "james-whitfield.jpg",
+    "joao appolinario": "joao-appolinario.jpg",
+    "salman khan": "salman-khan.png",
+    "luana genot": "luana-genot.jpg",
+    "marcelo tas": "marcelo-tas.jpg",
+    "marina silva": "marina-silva.jpg",
+    "neil redding": "neil-redding.jpg",
+    "nina silva": "nina-silva.jpg",
+    "pedro cerize": "pedro-cerize.jpg",
+    "rebeca andrade": "rebeca-andrade.webp",
+    "rick doblin": "rick-doblin.jpg",
+    "robson santos": "robson-santos.jpg",
+    "ronaldo lemos": "ronaldo-lemos.jpg",
+    "samir alves": "samir-alves.jpg",
+    "tania cosentino": "tania-cosentino.jpg",
+    "vinicius scofield": "vinicius-scofield.jpg",
+    "viviane mosé": "viviane-mose.jpg",
+    "walter longo": "walter-longo.jpg",
+    "zeina latif": "zeina-latif.jpg"
+  };
+
+  function parseSpeaker(speakerStr) {
+    if (!speakerStr) return { name: '', role: '' };
+    const match = speakerStr.match(/^([^(]+)(?:\(([^)]*)\))?/);
+    const name = match ? match[1].trim() : speakerStr.trim();
+    const role = match && match[2] ? match[2].trim() : '';
+    return { name, role };
+  }
+
+  function getSpeakerPhoto(name) {
+    if (!name) return null;
+    const cleanName = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+    // 1. Direct match in local photos map (914+ official photos in palestrantes/)
+    if (window.RIW_SPEAKERS_LOCAL_MAP && window.RIW_SPEAKERS_LOCAL_MAP[cleanName]) {
+      return `palestrantes/${window.RIW_SPEAKERS_LOCAL_MAP[cleanName]}`;
+    }
+
+    // 2. Direct match in built-in keynote map
+    for (const [key, filename] of Object.entries(SPEAKER_PHOTOS_MAP)) {
+      const cleanKey = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+      if (cleanName === cleanKey) {
+        return `palestrantes/${filename}`;
+      }
+    }
+
+    // 3. Partial match in local photos map
+    if (window.RIW_SPEAKERS_LOCAL_MAP) {
+      for (const [key, filename] of Object.entries(window.RIW_SPEAKERS_LOCAL_MAP)) {
+        if (cleanName.length > 5 && (cleanName.includes(key) || key.includes(cleanName))) {
+          return `palestrantes/${filename}`;
+        }
+      }
+    }
+
+    // 4. Fallback to official RIW CDN photo
+    if (window.RIW_SPEAKERS_CDN_MAP && window.RIW_SPEAKERS_CDN_MAP[cleanName]) {
+      return window.RIW_SPEAKERS_CDN_MAP[cleanName];
+    }
+
+    // 5. Partial match in built-in map
+    for (const [key, filename] of Object.entries(SPEAKER_PHOTOS_MAP)) {
+      const cleanKey = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+      if (cleanName.includes(cleanKey) || cleanKey.includes(cleanName)) {
+        return `palestrantes/${filename}`;
+      }
+    }
+
+    return null;
+  }
+
   // Helper: Parse Date String (DD/MM/YYYY) to Date Object & Weekday
   function getWeekdayInfo(dateStr) {
     if (!dateStr) return { short: '', full: '' };
@@ -60,6 +174,21 @@ document.addEventListener('DOMContentLoaded', () => {
       short: daysOfWeekShort[dayIdx] || '',
       full: daysOfWeek[dayIdx] || ''
     };
+  }
+
+  // Helper: Return specific visual theme class for Category Badge (matching RIW tracks)
+  function getCategoryClass(category) {
+    if (!category) return '';
+    const c = category.toLowerCase();
+    if (c.includes('tecnologia')) return 'cat-tech';
+    if (c.includes('empreendedorismo') || c.includes('varejo')) return 'cat-business';
+    if (c.includes('saúde') || c.includes('socioambiental') || c.includes('agro')) return 'cat-health';
+    if (c.includes('criativa') || c.includes('branding')) return 'cat-creative';
+    if (c.includes('diálogos') || c.includes('diversidade')) return 'cat-dialogues';
+    if (c.includes('governança') || c.includes('e-gov') || c.includes('finanças')) return 'cat-gov';
+    if (c.includes('energia') || c.includes('arquitetura')) return 'cat-energy';
+    if (c.includes('esporte') || c.includes('educação')) return 'cat-sport';
+    return '';
   }
 
   // Initialize App
@@ -133,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const validCats = new Set();
     catEvents.forEach(e => { if (e.Categoria) validCats.add(e.Categoria.trim()); });
     
-    categoryFilter.innerHTML = '<option value="ALL">Todas as Categorias</option>';
+    categoryFilter.innerHTML = '<option value="ALL">Todas as trilhas</option>';
     [...validCats].sort().forEach(c => {
       const opt = document.createElement('option');
       opt.value = c;
@@ -149,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const validSubcats = new Set();
     subcatEvents.forEach(e => { if (e.Subcategoria) validSubcats.add(e.Subcategoria.trim()); });
 
-    subcategoryFilter.innerHTML = '<option value="ALL">Todas as Subcategorias</option>';
+    subcategoryFilter.innerHTML = '<option value="ALL">Todas as conferências</option>';
     [...validSubcats].sort().forEach(s => {
       const opt = document.createElement('option');
       opt.value = s;
@@ -165,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const validLocs = new Set();
     locEvents.forEach(e => { if (e.Local) validLocs.add(e.Local.trim()); });
 
-    locationFilter.innerHTML = '<option value="ALL">Todos os Locais & Palcos</option>';
+    locationFilter.innerHTML = '<option value="ALL">Todos os palcos</option>';
     [...validLocs].sort().forEach(l => {
       const opt = document.createElement('option');
       opt.value = l;
@@ -190,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    timePeriodFilter.innerHTML = '<option value="ALL">Todos os Horários</option>';
+    timePeriodFilter.innerHTML = '<option value="ALL">Todos os horários</option>';
     if (hasMorning) {
       const opt = document.createElement('option');
       opt.value = 'MORNING';
@@ -228,27 +357,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dayTabsContainer.innerHTML = '';
 
-    // "Todos os Dias" Tab
+    // "TODOS OS DIAS" Tab (Active by default, orange pill)
     const allTab = document.createElement('button');
     allTab.className = `day-tab ${currentDay === 'ALL' ? 'active' : ''}`;
-    allTab.innerHTML = `
-      <span class="week-day">COMPLETO</span>
-      <span class="date-num">Todos os Dias</span>
-    `;
+    allTab.textContent = 'TODOS OS DIAS';
     allTab.addEventListener('click', () => selectDay('ALL'));
     dayTabsContainer.appendChild(allTab);
 
-    // Date Specific Tabs
+    // Date Specific Tabs: "04 TER. AGO", "05 QUA. AGO", "06 QUI. AGO", "07 SEX. AGO"
     uniqueDates.forEach(dateStr => {
-      const { short: weekShort, full: weekFull } = getWeekdayInfo(dateStr);
+      const { short: weekShort } = getWeekdayInfo(dateStr);
+      const dayNum = dateStr.substring(0, 2);
+      const label = `${dayNum} ${weekShort}. AGO`;
+
       const tab = document.createElement('button');
       tab.className = `day-tab ${currentDay === dateStr ? 'active' : ''}`;
-      tab.setAttribute('title', `${weekFull}, ${dateStr}`);
-      
-      tab.innerHTML = `
-        <span class="week-day">${weekShort}</span>
-        <span class="date-num">${dateStr.substring(0, 5)}</span>
-      `;
+      tab.textContent = label;
       tab.addEventListener('click', () => selectDay(dateStr));
       dayTabsContainer.appendChild(tab);
     });
@@ -342,79 +466,97 @@ document.addEventListener('DOMContentLoaded', () => {
     attachCardEvents();
   }
 
-  // Create Card HTML
+  // Create Card HTML (EXACTLY MATCHING IMAGE 1)
   function createEventCardHTML(evt) {
     const isStarred = favorites.has(evt.ID);
-    const { full: weekFull } = getWeekdayInfo(evt.Data);
+    const dateShort = evt.Data ? evt.Data.substring(0, 5) : '';
     
-    // Parse speakers into clean preview
+    // Parse speakers into rich preview
     const speakersArr = evt.Palestrantes 
       ? evt.Palestrantes.split('|').map(s => s.trim()).filter(Boolean)
       : [];
 
-    const speakersHTML = speakersArr.slice(0, 2).map(spk => `
-      <div class="speaker-item">👤 ${spk}</div>
-    `).join('');
+    const parsedSpeakers = speakersArr.map(s => {
+      const parsed = parseSpeaker(s);
+      const photo = getSpeakerPhoto(parsed.name);
+      return { ...parsed, photo };
+    });
 
-    const moreSpeakersText = speakersArr.length > 2 
-      ? `<div style="font-size:0.75rem; color:var(--accent-cyan); margin-top:0.25rem;">+${speakersArr.length - 2} outro(s) palestrante(s)</div>` 
-      : '';
+    // Avatars (overlapping circular photos up to 4)
+    const avatarSpeakers = parsedSpeakers.slice(0, 4);
+    const avatarsHTML = avatarSpeakers.map((spk, idx) => {
+      const initial = spk.name.charAt(0).toUpperCase();
+      if (spk.photo) {
+        return `
+          <div class="speaker-avatar-wrap" style="z-index: ${10 - idx};">
+            <img src="${spk.photo}" alt="${spk.name}" class="speaker-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="speaker-avatar-initial" style="display:none;">${initial}</div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="speaker-avatar-wrap" style="z-index: ${10 - idx};">
+            <div class="speaker-avatar-initial">${initial}</div>
+          </div>
+        `;
+      }
+    }).join('');
+
+    // Speaker names string: "Deny Peres, Fernanda Rigon, Gessica, Danni Rudz +1"
+    const namesList = parsedSpeakers.slice(0, 4).map(s => s.name).join(', ');
+    const remainingCount = parsedSpeakers.length > 4 ? ` +${parsedSpeakers.length - 4}` : '';
+    const speakersText = namesList ? `${namesList}${remainingCount}` : 'Palestrante a definir';
 
     return `
       <div class="event-card" data-id="${evt.ID}">
-        <div>
-          <div class="card-badges">
-            <div class="badge-group">
-              ${evt.Categoria ? `<span class="badge-cat">${evt.Categoria}</span>` : ''}
-              ${evt.Subcategoria ? `<span class="badge-subcat">${evt.Subcategoria}</span>` : ''}
-            </div>
+        <div class="card-top-row">
+          <span class="badge-cat-pill">${evt.Categoria || 'Geral'}</span>
+          <div class="card-top-right">
+            <span class="card-date-badge">${dateShort}</span>
             <button class="btn-star ${isStarred ? 'starred' : ''}" data-id="${evt.ID}" title="Favoritar evento">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="${isStarred ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="${isStarred ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
             </button>
           </div>
-
-          <h3 class="card-title">${evt.Título || 'Sem Título'}</h3>
-
-          <div class="card-meta">
-            <div class="meta-row">
-              <svg class="meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-              <span>${weekFull ? weekFull + ', ' : ''}${evt.Data || ''} (${evt.Horário || 'Horário não especificado'})</span>
-            </div>
-
-            <div class="meta-row">
-              <svg class="meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-              <span>${evt.Local || 'Local a definir'}</span>
-            </div>
-          </div>
-
-          ${speakersArr.length > 0 ? `
-            <div class="speakers-preview">
-              <div class="speakers-label">Palestrante(s)</div>
-              <div class="speakers-list">
-                ${speakersHTML}
-                ${moreSpeakersText}
-              </div>
-            </div>
-          ` : ''}
         </div>
 
-        <div class="card-footer">
-          <button class="btn-details" data-id="${evt.ID}">
-            Ver Detalhes
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
+        ${evt.Subcategoria ? `<div class="card-subcat">${evt.Subcategoria}</div>` : ''}
+
+        <h3 class="card-title">${evt.Título || 'Sem Título'}</h3>
+
+        <div class="card-meta">
+          <div class="meta-item">
+            <svg class="meta-icon clock-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
+            <span>${evt.Horário || 'Horário não especificado'}</span>
+          </div>
+
+          <div class="meta-item">
+            <svg class="meta-icon pin-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>${evt.Local || 'Local a definir'}</span>
+          </div>
+        </div>
+
+        ${parsedSpeakers.length > 0 ? `
+          <div class="card-speakers-row">
+            <div class="speakers-avatar-group">
+              ${avatarsHTML}
+            </div>
+            <div class="speakers-names-text" title="${speakersText}">
+              ${speakersText}
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="card-footer">
+          <button class="btn-ver-mais" data-id="${evt.ID}">
+            Ver mais ›
           </button>
         </div>
       </div>
@@ -432,8 +574,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Detail Buttons
-    document.querySelectorAll('.btn-details').forEach(btn => {
+    // "Ver mais ›" Buttons
+    document.querySelectorAll('.btn-ver-mais').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = parseInt(btn.getAttribute('data-id'), 10);
         openModal(id);
@@ -475,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <svg width="18" height="18" viewBox="0 0 24 24" fill="${showOnlyFavorites ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
       </svg>
-      Minha Agenda (${favorites.size})
+      <span>Minha Agenda (${favorites.size})</span>
     `;
     favAgendaBtn.classList.toggle('active', showOnlyFavorites);
   }
@@ -489,6 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isStarred = favorites.has(evt.ID);
 
     modalTitle.textContent = evt.Título || 'Sem Título';
+    modalCategory.className = `badge-cat-pill ${getCategoryClass(evt.Categoria)}`;
     modalCategory.textContent = evt.Categoria || '';
     modalSubcategory.textContent = evt.Subcategoria || '';
     modalDate.textContent = `${weekFull ? weekFull + ', ' : ''}${evt.Data || ''}`;
@@ -499,19 +642,32 @@ document.addEventListener('DOMContentLoaded', () => {
       ? evt.Descrição 
       : 'Nenhuma descrição detalhada fornecida para este evento.';
 
-    // Format Speakers
+    // Format Speakers with local photos
     const speakersArr = evt.Palestrantes 
       ? evt.Palestrantes.split('|').map(s => s.trim()).filter(Boolean)
       : [];
 
-    if (speakersArr.length > 0) {
-      modalSpeakersList.innerHTML = speakersArr.map(spk => {
-        const initial = spk.charAt(0).toUpperCase();
+    const parsedSpeakers = speakersArr.map(s => {
+      const parsed = parseSpeaker(s);
+      const photo = getSpeakerPhoto(parsed.name);
+      return { ...parsed, photo };
+    });
+
+    if (parsedSpeakers.length > 0) {
+      modalSpeakersList.innerHTML = parsedSpeakers.map(spk => {
+        const initial = spk.name.charAt(0).toUpperCase();
         return `
           <div class="modal-speaker-card">
-            <div class="speaker-avatar">${initial}</div>
+            <div class="modal-speaker-avatar-wrap">
+              ${spk.photo 
+                ? `<img src="${spk.photo}" alt="${spk.name}" class="modal-speaker-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                   <div class="speaker-avatar-initial" style="display:none;">${initial}</div>`
+                : `<div class="speaker-avatar-initial">${initial}</div>`
+              }
+            </div>
             <div class="speaker-details">
-              <div class="name">${spk}</div>
+              <div class="name">${spk.name}</div>
+              ${spk.role ? `<div class="role">${spk.role}</div>` : ''}
             </div>
           </div>
         `;
