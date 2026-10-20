@@ -111,55 +111,83 @@ document.addEventListener('DOMContentLoaded', () => {
     "zeina latif": "zeina-latif.jpg"
   };
 
+  // Normalizador rigoroso para matching de palestrantes (sem acentos, sem pontuações, sem hífens)
+  function normalizeSpeakerKey(str) {
+    if (!str) return '';
+    return str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[-_.]/g, " ")
+      .replace(/[^a-z0-9 ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  // Mapa otimizado em memória construído na inicialização
+  const SPEAKER_PHOTO_LOOKUP = new Map();
+
+  function initSpeakerPhotoLookup() {
+    // 1. Mapeamento de Keynotes oficiais
+    for (const [key, filename] of Object.entries(SPEAKER_PHOTOS_MAP)) {
+      SPEAKER_PHOTO_LOOKUP.set(normalizeSpeakerKey(key), `./palestrantes/${filename}`);
+    }
+
+    // 2. Base completa de fotos locais em palestrantes/ (916+ fotos oficiais)
+    if (window.RIW_SPEAKERS_LOCAL_MAP) {
+      for (const [key, filename] of Object.entries(window.RIW_SPEAKERS_LOCAL_MAP)) {
+        const val = filename.startsWith('http') ? filename : `./palestrantes/${filename}`;
+        SPEAKER_PHOTO_LOOKUP.set(normalizeSpeakerKey(key), val);
+      }
+    }
+
+    // 3. Fallback para fotos CDN oficiais se disponíveis
+    if (window.RIW_SPEAKERS_CDN_MAP) {
+      for (const [key, url] of Object.entries(window.RIW_SPEAKERS_CDN_MAP)) {
+        const norm = normalizeSpeakerKey(key);
+        if (!SPEAKER_PHOTO_LOOKUP.has(norm)) {
+          SPEAKER_PHOTO_LOOKUP.set(norm, url);
+        }
+      }
+    }
+  }
+
   function parseSpeaker(speakerStr) {
     if (!speakerStr) return { name: '', role: '' };
     const match = speakerStr.match(/^([^(]+)(?:\(([^)]*)\))?/);
-    const name = match ? match[1].trim() : speakerStr.trim();
+    let name = match ? match[1].trim() : speakerStr.trim();
+    name = name.replace(/^[-\s·]+|[-\s·]+$/g, '');
     const role = match && match[2] ? match[2].trim() : '';
     return { name, role };
   }
 
   function getSpeakerPhoto(name) {
     if (!name) return null;
-    const cleanName = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const clean = normalizeSpeakerKey(name);
 
-    // 1. Direct match in local photos map (914+ official photos in palestrantes/)
-    if (window.RIW_SPEAKERS_LOCAL_MAP && window.RIW_SPEAKERS_LOCAL_MAP[cleanName]) {
-      return `palestrantes/${window.RIW_SPEAKERS_LOCAL_MAP[cleanName]}`;
+    // 1. Match direto normalizado
+    if (SPEAKER_PHOTO_LOOKUP.has(clean)) {
+      return SPEAKER_PHOTO_LOOKUP.get(clean);
     }
 
-    // 2. Direct match in built-in keynote map
-    for (const [key, filename] of Object.entries(SPEAKER_PHOTOS_MAP)) {
-      const cleanKey = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-      if (cleanName === cleanKey) {
-        return `palestrantes/${filename}`;
-      }
+    // 2. Match removendo prefixos de títulos (Prof., Dr., Dra., etc.)
+    const withoutPrefix = clean.replace(/^(prof|dr|dra|doutor|doutora|paje|padre)\s+/, '');
+    if (SPEAKER_PHOTO_LOOKUP.has(withoutPrefix)) {
+      return SPEAKER_PHOTO_LOOKUP.get(withoutPrefix);
     }
 
-    // 3. Partial match in local photos map
-    if (window.RIW_SPEAKERS_LOCAL_MAP) {
-      for (const [key, filename] of Object.entries(window.RIW_SPEAKERS_LOCAL_MAP)) {
-        if (cleanName.length > 5 && (cleanName.includes(key) || key.includes(cleanName))) {
-          return `palestrantes/${filename}`;
+    // 3. Match por prefixo de nome composto (ex: "Rebeca Andrade Silva" encontra "Rebeca Andrade")
+    if (clean.length > 5) {
+      for (const [key, photo] of SPEAKER_PHOTO_LOOKUP.entries()) {
+        if (key.length > 5 && (clean === key || clean.startsWith(key + ' ') || key.startsWith(clean + ' '))) {
+          return photo;
         }
-      }
-    }
-
-    // 4. Fallback to official RIW CDN photo
-    if (window.RIW_SPEAKERS_CDN_MAP && window.RIW_SPEAKERS_CDN_MAP[cleanName]) {
-      return window.RIW_SPEAKERS_CDN_MAP[cleanName];
-    }
-
-    // 5. Partial match in built-in map
-    for (const [key, filename] of Object.entries(SPEAKER_PHOTOS_MAP)) {
-      const cleanKey = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-      if (cleanName.includes(cleanKey) || cleanKey.includes(cleanName)) {
-        return `palestrantes/${filename}`;
       }
     }
 
     return null;
   }
+
 
   // Helper: Parse Date String (DD/MM/YYYY) to Date Object & Weekday
   function getWeekdayInfo(dateStr) {
@@ -202,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allEvents = await response.json();
       }
 
+      initSpeakerPhotoLookup();
       updateAllFilterDropdowns();
       renderDayTabs();
       applyFilters();
@@ -385,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Filter Logic
-  function applyFilters() {
+  function applyFilters({ resetPage = true } = {}) {
     updateAllFilterDropdowns();
 
     const query = searchInput.value.toLowerCase().trim();
@@ -433,24 +462,39 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     });
 
-    // Reset pagination to first page and render
-    page = 1;
+    if (resetPage) {
+      page = 1;
+    }
     renderEvents();
   }
 
   // Render Events Grid
   function renderEvents() {
     const totalCount = filteredEvents.length;
-    resultsCount.innerHTML = `Exibindo <strong>${totalCount}</strong> eventos encontrados`;
+    if (showOnlyFavorites) {
+      resultsCount.innerHTML = `Exibindo <strong>${totalCount}</strong> eventos salvos na sua <strong>Minha Agenda</strong>`;
+    } else {
+      resultsCount.innerHTML = `Exibindo <strong>${totalCount}</strong> eventos encontrados`;
+    }
 
     if (totalCount === 0) {
       eventsGrid.innerHTML = '';
       emptyState.style.display = 'block';
+      const h3 = emptyState.querySelector('h3');
+      const p = emptyState.querySelector('p');
+      if (showOnlyFavorites) {
+        if (h3) h3.textContent = 'Sua Agenda está vazia';
+        if (p) p.textContent = 'Você ainda não favoritou nenhuma palestra. Clique na estrela dos cards para montar sua programação personalizada!';
+      } else {
+        if (h3) h3.textContent = 'Nenhum evento encontrado';
+        if (p) p.textContent = 'Tente ajustar os filtros ou buscar por outro termo.';
+      }
       loadMoreContainer.style.display = 'none';
       return;
     }
 
     emptyState.style.display = 'none';
+
 
     const visibleItems = filteredEvents.slice(0, page * itemsPerPage);
     eventsGrid.innerHTML = visibleItems.map(evt => createEventCardHTML(evt)).join('');
@@ -489,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (spk.photo) {
         return `
           <div class="speaker-avatar-wrap" style="z-index: ${10 - idx};">
-            <img src="${spk.photo}" alt="${spk.name}" class="speaker-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <img src="${spk.photo}" alt="${spk.name}" class="speaker-avatar-img" loading="lazy" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
             <div class="speaker-avatar-initial" style="display:none;">${initial}</div>
           </div>
         `;
@@ -585,10 +629,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Toggle Favorite State
   function toggleFavorite(id) {
-    if (favorites.has(id)) {
-      favorites.delete(id);
-    } else {
+    const isNowStarred = !favorites.has(id);
+    if (isNowStarred) {
       favorites.add(id);
+    } else {
+      favorites.delete(id);
     }
 
     localStorage.setItem('riw_favorites', JSON.stringify([...favorites]));
@@ -596,21 +641,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update agenda button badge count
     updateFavBadgeCount();
 
-    // Re-render
-    applyFilters();
+    if (showOnlyFavorites) {
+      // Quando estiver dentro de "Minha Agenda":
+      // Ao desfavoritar, remove suavemente apenas aquele card do DOM sem resetar a tela
+      const cardEl = eventsGrid.querySelector(`.event-card[data-id="${id}"]`);
+      if (cardEl) {
+        cardEl.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        cardEl.style.opacity = '0';
+        cardEl.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          cardEl.remove();
+          const remainingCount = eventsGrid.querySelectorAll('.event-card').length;
+          resultsCount.innerHTML = `Exibindo <strong>${remainingCount}</strong> eventos salvos na sua <strong>Minha Agenda</strong>`;
+          if (remainingCount === 0) {
+            emptyState.style.display = 'block';
+            const h3 = emptyState.querySelector('h3');
+            const p = emptyState.querySelector('p');
+            if (h3) h3.textContent = 'Sua Agenda está vazia';
+            if (p) p.textContent = 'Você ainda não favoritou nenhuma palestra. Clique na estrela dos cards para montar sua programação personalizada!';
+            loadMoreContainer.style.display = 'none';
+          }
+        }, 250);
+      }
+    } else {
+      // No feed normal: atualiza diretamente os botões de estrela no DOM
+      // Isso NUNCA reseta a paginação e NUNCA fecha o feed dos cards carregados!
+      document.querySelectorAll(`.btn-star[data-id="${id}"]`).forEach(btn => {
+        btn.classList.toggle('starred', isNowStarred);
+        const svg = btn.querySelector('svg');
+        if (svg) {
+          svg.setAttribute('fill', isNowStarred ? 'currentColor' : 'none');
+        }
+      });
+    }
 
     // Also update modal star button if open
-    if (eventModal.classList.contains('active')) {
-      const isStarred = favorites.has(id);
-      modalStarBtn.classList.toggle('starred', isStarred);
-      modalStarBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="${isStarred ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        ${isStarred ? 'Salvo na Minha Agenda' : 'Adicionar à Minha Agenda'}
-      `;
+    if (eventModal && eventModal.classList.contains('active')) {
+      const currentModalId = parseInt(modalStarBtn.getAttribute('data-id'), 10);
+      if (currentModalId === id) {
+        modalStarBtn.classList.toggle('starred', isNowStarred);
+        modalStarBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="${isNowStarred ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          ${isNowStarred ? 'Salvo na Minha Agenda' : 'Adicionar à Minha Agenda'}
+        `;
+      }
     }
   }
+
 
   function updateFavBadgeCount() {
     favAgendaBtn.innerHTML = `
@@ -660,7 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="modal-speaker-card">
             <div class="modal-speaker-avatar-wrap">
               ${spk.photo 
-                ? `<img src="${spk.photo}" alt="${spk.name}" class="modal-speaker-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                ? `<img src="${spk.photo}" alt="${spk.name}" class="modal-speaker-img" loading="lazy" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
                    <div class="speaker-avatar-initial" style="display:none;">${initial}</div>`
                 : `<div class="speaker-avatar-initial">${initial}</div>`
               }
@@ -740,13 +819,20 @@ document.addEventListener('DOMContentLoaded', () => {
     favAgendaBtn.addEventListener('click', () => {
       showOnlyFavorites = !showOnlyFavorites;
       if (showOnlyFavorites) {
-        // Reseta o filtro de dia para exibir favoritos de TODAS as datas
+        // Ao clicar em Minha Agenda, limpa TODOS os filtros (busca, categoria, subcategoria, palco, turno, dia)
+        searchInput.value = '';
+        clearSearchBtn.style.display = 'none';
+        categoryFilter.value = 'ALL';
+        subcategoryFilter.value = 'ALL';
+        locationFilter.value = 'ALL';
+        timePeriodFilter.value = 'ALL';
         currentDay = 'ALL';
         renderDayTabs();
       }
       updateFavBadgeCount();
       applyFilters();
     });
+
 
     // Load More Button
     loadMoreBtn.addEventListener('click', () => {
