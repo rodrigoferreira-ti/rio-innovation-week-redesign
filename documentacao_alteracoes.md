@@ -88,6 +88,15 @@ d:/Freela Direto/Rio Innovation Week/
   - Mapeamento injetado localmente via `speakers-data.js` permitindo funcionamento instantâneo offline (sem bloqueio de CORS ao dar dois cliques no `index.html`).
   - Fallback automático para a URL do CDN oficial ou inicial estilizada caso algum participante novo não possua arquivo baixado.
 
+### [Otimização Mobile & Correções Críticas de UI/UX]
+- **Eliminação do Espaço Vazio de 260px nos Filtros:** Corrigido comportamento do `flex-basis: 260px` na coluna de busca que forçava uma altura vertical excessiva em layouts móveis, aproximando o botão "Limpar" para a posição correta.
+- **Botão "Limpar" Touch-Friendly:** Botão agora ocupa 100% da largura em dispositivos móveis com altura mínima de 44px para facilitar o toque de polegar.
+- **Prevenção de Zoom Automático (iOS Safari):** Font-size dos campos de busca e seleção definidos em 16px no mobile, eliminando o zoom indesejado em iPhones.
+- **Scroll Suave com Momentum nas Pílulas de Dias:** Adicionado `-webkit-overflow-scrolling: touch` e espaçamentos ergonômicos na barra de dias para evitar cortes abruptos.
+- **Ajustes de Margens e Padding de Cards:** Padding dos cards reduzido para 1.2rem em telas pequenas, ampliando a área útil de leitura sem alterar a versão desktop.
+- **Truncamento Fluido de Palestrantes:** Nomes de palestrantes com `flex: 1; min-width: 0;` impedem quebras de linha ou scroll horizontal indesejado.
+- **Modal Responsivo Compacto:** Dimensões, padding e fontes do modal ajustados para telas menores que 640px.
+
 ### [Design Final Oficial] Alinhamento 100% com o Design Original de Referência (Imagem 1)
 - **Objetivo:** Reproduzir com exatidão visual o design de referência do portal oficial da Rio Innovation Week (fundo preto `#000000`, pílulas de dias em laranja `#ff5500`, badges em ciano com contorno e avatares sobrepostos), mantendo 100% das melhorias funcionais (filtros encadeados anti-combinação vazia, busca em tempo real, Minha Agenda e carregamento local offline).
 - **Implementações:**
