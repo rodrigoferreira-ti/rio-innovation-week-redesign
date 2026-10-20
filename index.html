@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css?v=2.4">
+  <link rel="stylesheet" href="styles.css?v=2.5">
 </head>
 <body>
 
@@ -57,8 +57,10 @@
     </section>
 
     <!-- FILTER BAR (EXACTLY AS ORIGINAL) -->
+    <!-- FILTER BAR (STABLE 3-ROW LAYOUT) -->
     <section class="filters-section">
-      <div class="filters-row">
+      <!-- Linha 1: 4 Dropdowns Perfeitamente Alinhados com Larguras Fixas Iguais -->
+      <div class="filters-grid">
         
         <!-- Categoria / Trilha -->
         <div class="filter-col">
@@ -111,39 +113,37 @@
           </div>
         </div>
 
-        <!-- Search Bar -->
-        <div class="search-col">
-          <div class="search-wrapper">
-            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input 
-              type="text" 
-              id="searchInput" 
-              class="search-input" 
-              placeholder="Buscar palestra, palestrante..."
-              autocomplete="off"
-            >
-            <button id="clearSearch" class="clear-search" style="display: none;" title="Limpar busca">&times;</button>
-          </div>
-        </div>
-
-        <!-- Reset Button -->
-        <div class="reset-col">
-          <button id="resetFilters" class="btn-reset" title="Limpar Filtros">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-              <path d="M3 3v5h5"></path>
-            </svg>
-            Limpar
-          </button>
-        </div>
-
       </div>
 
-      <!-- Disclaimer text (exactly as original) -->
-      <div class="disclaimer-text">Programação sujeita a alterações sem aviso prévio.</div>
+      <!-- Linha 2: Barra de Busca em Largura Total -->
+      <div class="search-row">
+        <div class="search-wrapper">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Buscar palestra, palestrante..."
+            autocomplete="off"
+          >
+          <button id="clearSearch" class="clear-search" style="display: none;" title="Limpar busca">&times;</button>
+        </div>
+      </div>
+
+      <!-- Linha 3: Disclaimer + Botão Limpar Filtros -->
+      <div class="filters-bottom-row">
+        <div class="disclaimer-text">Programação sujeita a alterações sem aviso prévio.</div>
+        <button id="resetFilters" class="btn-reset" title="Limpar Filtros">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          Limpar Filtros
+        </button>
+      </div>
     </section>
 
     <!-- RESULTS METADATA BAR -->

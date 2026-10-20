@@ -172,4 +172,22 @@ Basta dar **dois cliques** em [**`index.html`**](file:///d:/Freela%20Direto/Rio%
    - `.card-title`, `.card-subcat` e `.meta-item span` receberam proteções de quebra (`word-break: break-word; overflow: hidden; text-overflow: ellipsis;`).
 4. **Proteção Global da Janela:** `html` e `body` com `max-width: 100vw; overflow-x: hidden;` para prevenir qualquer oscilação horizontal de viewport em navegadores mobile.
 
+## 📌 8. Alinhamento Estável dos Filtros no Desktop em 3 Linhas (20/10/2026)
+
+### 🔍 Diagnóstico do Problema no Desktop:
+- **Causa da Movimentação dos Campos:** Anteriormente, os filtros usavam `display: flex; flex-wrap: wrap;` com `.filter-col` em `flex: 0 0 auto`. Quando o usuário selecionava um valor (ex.: *"Impacto Socioambiental e Mudança Climática"* ou quando os filtros encadeados dinâmicos filtravam as opções de palcos/conferências), a largura intrínseca dos `<select>` mudava drasticamente. Isso causava um efeito cascata em que os campos vizinhos eram empurrados lateralmente e o campo de horário ou busca "pulava" de linha descontroladamente.
+
+### 🛠️ Solução Implementada:
+1. **Estrutura Elegante em 3 Linhas Independentes:**
+   - **Linha 1 (`.filters-grid`):** 4 colunas perfeitamente simétricas com `grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.85rem;`. Cada dropdown (*Trilha*, *Conferência*, *Palco*, *Horário*) possui exatamente a mesma largura fixa (308px no viewport padrão) e truncamento com reticências quando fechado (`text-overflow: ellipsis`), eliminando qualquer oscilação de largura ao alternar opções.
+   - **Linha 2 (`.search-row`):** Barra de busca destacada ocupando a largura total (100%), permitindo digitação confortável e visual limpo.
+   - **Linha 3 (`.filters-bottom-row`):** Barra de utilidades contendo à esquerda o aviso *"Programação sujeita a alterações sem aviso prévio"* e à direita o botão *"Limpar Filtros"* devidamente alinhado.
+2. **Adaptação Responsiva Fluida:**
+   - **Desktop Ultra / Padrão (> 1100px):** 4 dropdowns na Linha 1.
+   - **Tablets (901px a 1100px):** 2x2 colunas organizadas na Linha 1.
+   - **Mobile (≤ 900px):** Empilhamento vertical fluido em 100% da largura, com botões e selects de toque ergonômico (≥ 46px).
+3. **Validação Visual com Puppeteer:**
+   - Teste automatizado executado com medição de coordenadas `top`, `left`, `width` antes e após seleção de filtros: **0 pixels de desvio (100% estável)**.
+
+
 

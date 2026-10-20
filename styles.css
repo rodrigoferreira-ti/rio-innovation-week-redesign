@@ -246,19 +246,23 @@ body {
    FILTER BAR (MATCHING ORIGINAL SCREENSHOT)
    ========================================================================== */
 .filters-section {
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
-.filters-row {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: center;
+/* Linha 1: 4 Colunas Perfeitamente Fixas e Iguais (Nunca redimensionam ou quebram) */
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+  width: 100%;
 }
 
 .filter-col {
-  flex: 0 0 auto;
-  min-width: 175px;
+  width: 100%;
+  min-width: 0;
 }
 
 .select-wrapper {
@@ -280,6 +284,9 @@ body {
   appearance: none;
   -webkit-appearance: none;
   transition: var(--transition-fast);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .filter-select:hover {
@@ -306,9 +313,9 @@ body {
   pointer-events: none;
 }
 
-/* Search Column */
-.search-col {
-  flex: 1 1 260px;
+/* Linha 2: Barra de Busca em Largura Total */
+.search-row {
+  width: 100%;
 }
 
 .search-wrapper {
@@ -366,13 +373,23 @@ body {
   color: #ffffff;
 }
 
-/* Reset Button */
-.reset-col {
-  flex: 0 0 auto;
+/* Linha 3: Barra com Disclaimer e Botão Limpar Filtros */
+.filters-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.disclaimer-text {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin: 0;
 }
 
 .btn-reset {
-  padding: 0.65rem 1rem;
+  padding: 0.6rem 1.25rem;
   background: #141414;
   border: 1px solid var(--border-input);
   border-radius: var(--radius-sm);
@@ -380,24 +397,19 @@ body {
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   transition: var(--transition-fast);
   font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-reset:hover {
   color: #ffffff;
   border-color: #52525b;
   background: #1f1f1f;
-}
-
-/* Disclaimer text (as in screenshot) */
-.disclaimer-text {
-  color: var(--text-dim);
-  font-size: 0.785rem;
-  margin-top: 0.65rem;
 }
 
 /* Results Count */
@@ -990,6 +1002,12 @@ body {
    and completely eliminating empty gaps or flex basis overflow.
    ========================================================================== */
 
+@media (max-width: 1100px) and (min-width: 901px) {
+  .filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .events-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -1012,26 +1030,20 @@ body {
     font-size: 2.2rem;
   }
 
-  /* Filters Column Layout without Flex Basis Collapse */
-  .filters-row {
-    flex-direction: column;
-    align-items: stretch;
+  /* Tablet & Mobile: Stack Filters Cleanly */
+  .filters-section {
+    gap: 0.65rem;
+  }
+
+  .filters-grid {
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.65rem;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
   }
 
-  .filter-col, .search-col, .reset-col {
+  .filter-col, .search-row, .search-wrapper {
     width: 100%;
-    max-width: 100%;
-    flex: none; /* Prevents flex-basis: 260px from blowing up vertical height on search-col */
     min-width: 0;
-    box-sizing: border-box;
-  }
-
-  .search-wrapper, .select-wrapper {
-    width: 100%;
   }
 
   /* Ensure touch-friendly height & prevent iOS zoom (<16px) */
@@ -1039,6 +1051,13 @@ body {
   .search-input {
     font-size: 16px;
     min-height: 46px;
+  }
+
+  .filters-bottom-row {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.65rem;
+    width: 100%;
   }
 
   .btn-reset {
@@ -1051,7 +1070,7 @@ body {
 
   .disclaimer-text {
     text-align: center;
-    margin-top: 0.75rem;
+    margin-top: 0.25rem;
   }
 
   /* Speakers row on mobile: fluid width and ellipsis without text clipping */
