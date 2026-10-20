@@ -152,8 +152,24 @@ d:/Freela Direto/Rio Innovation Week/
 ### 🚀 Como Rodar e Testar:
 Basta dar **dois cliques** em [**`index.html`**](file:///d:/Freela%20Direto/Rio%20Innovation%20Week/index.html) para abrir diretamente no navegador padrão (Chrome, Edge, Firefox, Safari).
 
-### 📋 Sugestões de Próximos Passos para Amanhã:
-- [ ] Testar navegação e favoritos no navegador.
-- [ ] Opcional: Publicação no **GitHub Pages** conforme o guia [`PASSO_A_PASSO_GITHUB.md`](file:///d:/Freela%20Direto/Rio%20Innovation%20Week/PASSO_A_PASSO_GITHUB.md).
-- [ ] Opcional: Download de lote adicional das fotos restantes se desejado (atualmente 906 fotos já cobrem a ampla maioria da programação).
+
+
+## 📌 7. Correção Definitiva do Overflow Horizontal dos Cards no Mobile (20/10/2026)
+
+### 🔍 Causa Raiz Identificada:
+1. No CSS Grid, `grid-template-columns: 1fr` equivale a `minmax(auto, 1fr)`.
+2. A dimensão `auto` obriga a coluna da grid a acomodar a maior largura intrínseca (*min-content*) dos itens filhos sem encolher abaixo dela.
+3. Como badges com nomes longos (ex.: *"Impacto Socioambiental e Mudança Climática"* ~330px) e o bloco da data/favoritos (~85px) somavam mais de 430px, os cards expandiam para além da largura da tela dos celulares (375px–414px).
+4. Como consequência, a lateral direita de todos os cards era cortada pelo `overflow-x: hidden` da página, ocultando a data `04/08`, o botão de favoritar (estrela) e a borda direita.
+
+### 🛠️ Solução Implementada:
+1. **Grid Column Sizing:** No breakpoint `@media (max-width: 900px)`, `.events-grid` agora usa `grid-template-columns: minmax(0, 1fr); width: 100%; max-width: 100%; box-sizing: border-box;`.
+2. **Card Containment:** `.event-card` recebeu `width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden;`.
+3. **Distribuição do Cabeçalho do Card:**
+   - `.card-top-row` configurado com `width: 100%; min-width: 0; display: flex; align-items: flex-start; justify-content: space-between;`.
+   - `.badge-cat-pill` recebeu `max-width: calc(100% - 82px); white-space: normal; line-height: 1.25; word-break: break-word; overflow-wrap: break-word;`. Quando o nome da trilha é longo, ele quebra linha com elegância sem empurrar a data e o botão de favoritar para fora da tela.
+   - `.card-top-right` recebeu `flex-shrink: 0; margin-left: auto;` garantindo ancoragem fixa no canto superior direito do card.
+   - `.card-title`, `.card-subcat` e `.meta-item span` receberam proteções de quebra (`word-break: break-word; overflow: hidden; text-overflow: ellipsis;`).
+4. **Proteção Global da Janela:** `html` e `body` com `max-width: 100vw; overflow-x: hidden;` para prevenir qualquer oscilação horizontal de viewport em navegadores mobile.
+
 

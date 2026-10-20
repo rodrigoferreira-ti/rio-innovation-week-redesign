@@ -55,6 +55,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -64,6 +65,8 @@ body {
   line-height: 1.5;
   min-height: 100vh;
   overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -414,14 +417,14 @@ body {
   color: #ffffff;
 }
 
-/* ==========================================================================
-   EVENT CARDS GRID (2 COLUMNS PER ROW IN DESKTOP)
-   ========================================================================== */
 .events-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
   margin-bottom: 3.5rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .event-card {
@@ -434,6 +437,11 @@ body {
   justify-content: space-between;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .event-card:hover {
@@ -447,8 +455,10 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.5rem;
   margin-bottom: 0.65rem;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Category Pill (Cyan border pill - matching screenshot) */
@@ -461,19 +471,28 @@ body {
   font-size: 0.725rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% - 85px);
+  white-space: normal;
+  line-height: 1.25;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .card-top-right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .card-date-badge {
   font-size: 0.875rem;
   font-weight: 700;
   color: #ffffff;
+  white-space: nowrap;
 }
 
 /* Favorite Star Button */
@@ -488,6 +507,7 @@ body {
   align-items: center;
   justify-content: center;
   transition: var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .btn-star:hover {
@@ -511,6 +531,8 @@ body {
   color: var(--text-subcat);
   letter-spacing: 0.06em;
   margin-bottom: 0.45rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Card Title */
@@ -524,6 +546,9 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 /* Meta Rows (Time & Palco) */
@@ -534,12 +559,21 @@ body {
   margin-bottom: 1.1rem;
   font-size: 0.85rem;
   color: var(--text-muted);
+  min-width: 0;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
   gap: 0.55rem;
+  min-width: 0;
+}
+
+.meta-item span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .meta-icon.clock-icon {
@@ -618,7 +652,9 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 340px;
+  flex: 1 1 0%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Card Footer: "Ver mais ›" Link in Orange (matching screenshot) */
@@ -956,11 +992,22 @@ body {
 
 @media (max-width: 900px) {
   .events-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     gap: 1.25rem;
     margin-bottom: 2.75rem;
   }
   
+  .event-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
   .page-title {
     font-size: 2.2rem;
   }
@@ -970,12 +1017,17 @@ body {
     flex-direction: column;
     align-items: stretch;
     gap: 0.65rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .filter-col, .search-col, .reset-col {
     width: 100%;
+    max-width: 100%;
     flex: none; /* Prevents flex-basis: 260px from blowing up vertical height on search-col */
     min-width: 0;
+    box-sizing: border-box;
   }
 
   .search-wrapper, .select-wrapper {
@@ -1006,10 +1058,12 @@ body {
   .card-speakers-row {
     width: 100%;
     min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .speakers-names-text {
-    flex: 1;
+    flex: 1 1 0%;
     min-width: 0;
     max-width: 100%;
   }
@@ -1047,6 +1101,9 @@ body {
 @media (max-width: 640px) {
   .container {
     padding: 0 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .site-header {
@@ -1079,6 +1136,9 @@ body {
   /* Calendar days horizontal scroll with momentum touch */
   .calendar-section {
     margin-bottom: 1.25rem;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .calendar-days-bar {
@@ -1086,6 +1146,9 @@ body {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     gap: 0.55rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .day-tab {
@@ -1097,24 +1160,51 @@ body {
 
   /* Cards Mobile Padding & Ergonomics */
   .event-card {
-    padding: 1.2rem;
+    padding: 1.15rem 1rem;
     border-radius: var(--radius-md);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .card-top-row {
-    flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: 0.45rem;
+    flex-wrap: nowrap;
+  }
+
+  .badge-cat-pill {
+    max-width: calc(100% - 82px);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.65rem;
+    white-space: normal;
+    line-height: 1.25;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .card-top-right {
     margin-left: auto;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .card-date-badge {
+    font-size: 0.825rem;
   }
 
   .btn-star {
-    min-width: 36px;
-    min-height: 36px;
-    padding: 0.4rem;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0.3rem;
   }
 
   .card-title {
